@@ -1,6 +1,11 @@
 
 export default {
   mode: 'universal',
+  router: {
+    middleware: [
+      'auth-cookie'
+    ]
+  },
   /*
   ** Headers of the page
   */

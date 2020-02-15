@@ -20,3 +20,9 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## デプロイ方法 
+Google cloud使って
+`gcloud app browse --project=sun-blog-268312`
+
+https://sun-blog-268312.appspot.com/posts/

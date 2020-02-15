@@ -9,9 +9,9 @@
           <span>ユーザー ID</span>
           <el-input placeholder="" v-model="formData.id"/>
         </div>
-        <div class="form-content">
-          <el-checkbox v-model="isCreateMode">アカウントを作成する</el-checkbox>
-        </div>
+<!--        <div class="form-content">-->
+<!--          <el-checkbox v-model="isCreateMode">アカウントを作成する</el-checkbox>-->
+<!--        </div>-->
         <div class="text-right">
           <el-button type="primary" @click="handleClickSubmit">{{buttonText}}</el-button>
         </div>

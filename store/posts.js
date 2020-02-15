@@ -5,7 +5,7 @@ export const state = () => ({
 })
 
 export const getters = {
-  posts: (state) => state.posts
+  posts: state => state.posts.map(post => Object.assign({likes: []}, post))
 }
 
 export const mutations = {
@@ -28,19 +28,25 @@ export const actions = {
   async fetchPosts({commit}) {
     const posts = await this.$axios.$get(`/posts.json`)
     commit('clearPosts')
-    Object.entries(posts).reverse().forEach(([id, content]) =>
-      commit('addPost', {
+    Object.entries(posts || [])
+      .reverse()
+      .forEach(([id, content]) =>
+        commit('addPost', {
           post: {
             id,
             ...content
           }
-        }
-      ))
+        })
+      )
   },
   async publishPost({commit}, {payload}) {
     const user = await this.$axios.$get(`/users/${payload.user.id}.json`)
-    const post_id = (await this.$axios.$post('/posts.json', payload)).name
     const created_at = moment().format()
+    payload = {
+      created_at,
+      ...payload
+    }
+    const post_id = (await this.$axios.$post('/posts.json', payload)).name
     const post = {id: post_id, ...payload, created_at}
     const putData = {id: post_id, ...payload, created_at}
     delete putData.user
@@ -49,5 +55,19 @@ export const actions = {
       putData
     ])
     commit('addPost', {post})
+  },
+  async addLikeToPost({commit}, {user, post}) {
+    post.likes.push({
+      created_at: moment().format(),
+      user_id: user.id,
+      post_id: post.id
+    })
+    const newPost = await this.$axios.$put(`/posts/${post.id}.json`, post)
+    commit('updatePost', {post: newPost})
+  },
+  async removeLikeToPost({commit}, {user, post}) {
+    post.likes = post.likes.filter(like => like.user_id !== user.id) || []
+    const newPost = await this.$axios.$put(`/posts/${post.id}.json`, post)
+    commit('updatePost', {post: newPost})
   }
 }
